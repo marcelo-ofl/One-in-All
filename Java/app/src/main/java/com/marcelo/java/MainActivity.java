@@ -113,4 +113,9 @@ public class MainActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 }
