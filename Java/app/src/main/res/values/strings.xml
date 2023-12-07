@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">Java</string>
     <string name="supermarket_manager">SuperMarket Manager</string>
+    <string name="add_product">Adicionar</string>
+    <string name="manager_product">Gerenciar</string>
+    <string name="statistics">Estatisticas</string>
+
 </resources>
