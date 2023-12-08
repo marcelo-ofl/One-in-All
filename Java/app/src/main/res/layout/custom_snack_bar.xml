@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:background="@drawable/background_snack"
+    android:paddingStart="6dp"
+    tools:ignore="RtlSymmetry">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/snack_mgs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/snack_actions"
+        android:layout_alignBottom="@id/snack_actions"
+        android:layout_toStartOf="@id/snack_actions"
+        android:ellipsize="marquee"
+        android:gravity="center"
+        android:singleLine="true"
+        android:textSize="16sp" />
+
+    <FrameLayout
+        android:id="@+id/snack_actions"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_alignParentEnd="true">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/snack_btn"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@null" />
+
+        <ProgressBar
+            android:id="@+id/snack_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+    </FrameLayout>
+
+</RelativeLayout>

@@ -60,4 +60,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/nav_menu_main" />
 
+    <include
+        android:id="@+id/layout_snackBar"
+        layout="@layout/custom_snack_bar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/nav_buttonNavigation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

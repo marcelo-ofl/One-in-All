@@ -1,10 +1,14 @@
 package com.marcelo.java;
 
 import android.os.Bundle;
-import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -12,6 +16,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.marcelo.java.fragments.FragmentAddProduct;
 import com.marcelo.java.fragments.FragmentManagerProduct;
 import com.marcelo.java.fragments.FragmentStatisticsMarket;
+import com.marcelo.java.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,20 +25,29 @@ public class MainActivity extends AppCompatActivity {
 
     private ViewPager2 viewPager;
     private BottomNavigationView bottomNavigationView;
-    private boolean pageSlid, menuSelected;
-
+    private boolean pageSlid, menuSelected = true;
     private PagerAdapter pagerAdapter;
+    private RelativeLayout snackBar;
+    private AppCompatButton snackBarAction;
+    private AppCompatTextView snackBarMgs;
+    private ProgressBar snackBarProgress;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        snackBar = findViewById(R.id.layout_snackBar);
+        snackBarAction = snackBar.findViewById(R.id.snack_btn);
+        snackBarMgs = snackBar.findViewById(R.id.snack_mgs);
+        snackBarProgress = snackBar.findViewById(R.id.snack_progress);
+
         setBottomNavigationView();
         setFragmentsPager();
+        setSnackBarAction();
     }
 
-    private void setFragmentsPager() {// Configuarar páginas e fragments
+    private void setFragmentsPager() { // Configuarar páginas e fragments
         viewPager = findViewById(R.id.fragments_content);
 
         FragmentAddProduct fragmentAddProduct = new FragmentAddProduct();
@@ -51,43 +65,43 @@ public class MainActivity extends AppCompatActivity {
         setCallbackPager();
     }
 
-    private void setCallbackPager() { // Callback para saber quando um fragment específico foi selecionado
+    private void setCallbackPager() { // Callback para saber quando um fragment específico foi selecionado da página
         viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
-                if (menuSelected){
-                    Log.i("LogMain", "Menu foi selecionado");
+                if (menuSelected) {
                     menuSelected = false;
                     return;
                 }
+
                 pageSlid = true; // Se passou pela condição acima, o usuário deslizou
 
+                String fragment = null;
                 int menuSelected = bottomNavigationView.getSelectedItemId();
                 if (position == 1) {
-                    Log.i("LogMain", "swiped: manager");
                     if (menuSelected != R.id.menu_main_manager) {
+                        fragment = "Gerenciador";
                         bottomNavigationView.setSelectedItemId(R.id.menu_main_manager);
                     }
                 } else if (position == 2) {
-                    Log.i("LogMain", "swiped: statistics");
                     if (menuSelected != R.id.menu_main_statistics) {
+                        fragment = "Estatisticas";
                         bottomNavigationView.setSelectedItemId(R.id.menu_main_statistics);
                     }
-                } else
-                if (menuSelected != R.id.menu_main_add) {
-                    Log.i("LogMain", "swiped: Add");
+                } else if (menuSelected != R.id.menu_main_add) {
+                    fragment = "Adicionar";
                     bottomNavigationView.setSelectedItemId(R.id.menu_main_add);
                 }
+                setSnackBar("Deslizou para: " + fragment, "Fechar", false);
             }
         });
     }
 
-    public void setBottomNavigationView() { // Configurar BottomNavigationView do activity_main.xml
+    public void setBottomNavigationView() { // Configurar BottomNavigationView
         bottomNavigationView = findViewById(R.id.nav_buttonNavigation);
         bottomNavigationView.setOnItemSelectedListener(items -> {
             int item = items.getItemId();
-            if (pageSlid){
-                Log.i("LogMain", "the user swipes the page");
+            if (pageSlid) {
                 pageSlid = false;
                 return true;
             }
@@ -98,10 +112,36 @@ public class MainActivity extends AppCompatActivity {
             } else if (item == R.id.menu_main_statistics) {
                 selected = 2;
             }
-            viewPager.setCurrentItem(selected);
-            Log.i("LogMain", "Fragment: " + pagerAdapter.getFragmentPager().get(selected).getTag());
+            if (viewPager.getCurrentItem() != selected) { // Mudar a pagina apenas se for diferente da atual
+                viewPager.setCurrentItem(selected);
+            }
             return true;
         });
+    }
+
+    public void setSnackBar(String mgs, String btnAction, boolean progress) {
+        if (snackBar.getVisibility() == View.GONE){
+            setVisibleSnackBar(View.VISIBLE);
+        }
+
+        snackBarMgs.setText(mgs);
+
+        if (progress) {
+            snackBarAction.setVisibility(View.GONE);
+            snackBarProgress.setVisibility(View.VISIBLE);
+        } else {
+            snackBarProgress.setVisibility(View.GONE);
+            snackBarAction.setText(btnAction);
+        }
+    }
+
+    private void setSnackBarAction(){
+        snackBarAction.setOnClickListener(view -> setVisibleSnackBar(View.GONE));
+    }
+
+
+    public void setVisibleSnackBar(int visibility) {
+        Utils.setAnimation(this, visibility, snackBar);
     }
 
     @Override
